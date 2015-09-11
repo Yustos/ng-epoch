@@ -83,7 +83,8 @@
       if (newVal) { $scope.me.update($scope.gaugeStream); }
     }, true);
     $scope.$watch('chartData', function(newVal, oldVal) {
-      if (newVal != oldVal) { $scope.me.setData(newVal); }
+        //if (newVal != oldVal) { $scope.me.setData(newVal); }
+        if (newVal != oldVal) { $scope.me.update(newVal); }
     }, true);
   });
 
@@ -113,8 +114,17 @@
       if (scope.chartClass) { elem.addClass(scope.chartClass); }
       var options = scope.filterOptions();
       options.type = 'bar';
-      elem.epoch(options);
-      $compile(elem)(scope);
+      //elem.epoch(options);
+      //$compile(elem)(scope);
+      var epoch = scope.renderEpoch(elem, options);
+
+      scope.$watch("chartHeight", function (v) {
+          epoch.option('height', v);
+      });
+
+      scope.$watch("chartWidth", function (v) {
+          epoch.option('width', v);
+      });
     };
     return angular.extend(angular.copy(baseDirective), {link: barFunction});
   });
@@ -125,6 +135,14 @@
       var options = scope.filterOptions();
       options.type = 'time.bar';
       var liveBar = scope.renderEpoch(elem, options);
+
+      scope.$watch("chartHeight", function (v) {
+          liveBar.option('height', v);
+      });
+
+      scope.$watch("chartWidth", function (v) {
+          liveBar.option('width', v);
+      });
     };
     return angular.extend(angular.copy(baseDirective), {link: liveBarFunction});
   });
